@@ -1,0 +1,65 @@
+{
+  "id": "1447661",
+  "name": "vue-electron-folder-dev",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "4936605",
+      "name": "file-fill",
+      "font_class": "file-fill",
+      "unicode": "e857",
+      "unicode_decimal": 59479
+    },
+    {
+      "icon_id": "4936606",
+      "name": "file-excel-fill",
+      "font_class": "file-excel-fill",
+      "unicode": "e858",
+      "unicode_decimal": 59480
+    },
+    {
+      "icon_id": "4936607",
+      "name": "file-markdown-fill",
+      "font_class": "file-markdown-fill",
+      "unicode": "e859",
+      "unicode_decimal": 59481
+    },
+    {
+      "icon_id": "4936609",
+      "name": "file-ppt-fill",
+      "font_class": "file-ppt-fill",
+      "unicode": "e85a",
+      "unicode_decimal": 59482
+    },
+    {
+      "icon_id": "4936611",
+      "name": "file-word-fill",
+      "font_class": "file-word-fill",
+      "unicode": "e85b",
+      "unicode_decimal": 59483
+    },
+    {
+      "icon_id": "4936612",
+      "name": "file-zip-fill",
+      "font_class": "file-zip-fill",
+      "unicode": "e85c",
+      "unicode_decimal": 59484
+    },
+    {
+      "icon_id": "4936613",
+      "name": "file-pdf-fill",
+      "font_class": "file-pdf-fill",
+      "unicode": "e85d",
+      "unicode_decimal": 59485
+    },
+    {
+      "icon_id": "4936615",
+      "name": "file-image-fill",
+      "font_class": "file-image-fill",
+      "unicode": "e85e",
+      "unicode_decimal": 59486
+    }
+  ]
+}
