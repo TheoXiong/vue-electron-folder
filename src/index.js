@@ -1,8 +1,8 @@
 import Folder from './components/Folder.vue'
 
 Folder.install = function (Vue, opt = {}) {
-  if (install.installed) return
-  install.installed = true
+  if (Folder.installed) return
+  Folder.installed = true
   Vue.component('Folder', Folder)
 }
 

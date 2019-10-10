@@ -169,6 +169,21 @@ dblclick | 双击文件的事件 | data
 close  | 关闭文件夹的事件 | data
 drag-start | 开始拖拽的事件 | selectedFiles, event
 
+### 插槽
+
+#### 作用域插槽
+
+自定义右键打开的上下文菜单内容，参数为 `{ node, data }`  
+```
+示例：
+  <folder>
+    <div slot-scope="{ node, data }">
+      <div>name: {{ data.label}}</div>
+      <div>path: {{ data.path}}</div>
+    </div>
+  </folder>
+```
+
 
 ## 参考
 - VS Code

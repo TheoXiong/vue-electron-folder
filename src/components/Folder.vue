@@ -20,58 +20,61 @@
         @node-expand="onNodeExpand"
         ref="elTree"
       >
-        <span
-          class="folder-outer"
-          slot-scope="{ node, data }"
-          draggable="true"
-          @dragstart="onDragStart(node, data, $event)"
-          @drag="onDrag(node, data, $event)"
-          @dragend="onDragEnd(node, data, $event)"
-          @click.exact="onClick(node, data, $event)"
-          @click.ctrl.stop="onCtrlClick(node, data, $event)"
-        >
+        <context-menu slot-scope="{ node, data }">
+            <slot :data="data" :node="node" slot="context"></slot>
           <span
-            v-if="data.type === defines.TYPE_DIRECTORY"
-            class="folder-inner"
-            @mouseenter="onMouseenter(node, data)"
-            @mouseleave="onMouseleave(node, data)"
+            slot="reference"
+            class="folder-outer"
+            draggable="true"
+            @dragstart="onDragStart(node, data, $event)"
+            @drag="onDrag(node, data, $event)"
+            @dragend="onDragEnd(node, data, $event)"
+            @click.exact="onClick(node, data, $event)"
+            @click.ctrl.stop="onCtrlClick(node, data, $event)"
           >
-            <span class="folder-item-left">
-              <span class="folder-item-icon">
-                <i v-if="node.expanded" class="iconfont iconfolder-open-fill"></i>
-                <i v-else class="iconfont iconfolder-fill"></i>
+            <span
+              v-if="data.type === defines.TYPE_DIRECTORY"
+              class="folder-inner"
+              @mouseenter="onMouseenter(node, data)"
+              @mouseleave="onMouseleave(node, data)"
+            >
+              <span class="folder-item-left">
+                <span class="folder-item-icon">
+                  <i v-if="node.expanded" class="iconfont iconfolder-open-fill"></i>
+                  <i v-else class="iconfont iconfolder-fill"></i>
+                </span>
+                <el-tooltip placement="right" effect="light" :content="data.path" :open-delay="tipDelay" :disabled="isDraging" popper-class="folder-tooltip">
+                  <span class="folder-item-label">{{ truncateName(data.label) }}</span>
+                </el-tooltip>
               </span>
-              <el-tooltip placement="right" effect="light" :content="data.path" :open-delay="tipDelay" :disabled="isDraging" popper-class="folder-tooltip">
-                <span class="folder-item-label">{{ truncateName(data.label) }}</span>
-              </el-tooltip>
+              <span class="folder-item-right">
+                <el-tooltip placement="right" effect="light" :content="tipReload" :open-delay="tipDelay" :disabled="isDraging" popper-class="folder-tooltip">
+                  <span class="folder-refresh" v-show="enableReload && node.level === 1 && data.hovering" @click.stop="onRefreshFolder(node, data)">
+                    <i class="iconfont iconreload"></i>
+                  </span>
+                </el-tooltip>
+                <el-tooltip placement="right" effect="light" :content="tipClose" :open-delay="tipDelay" :disabled="isDraging" popper-class="folder-tooltip">
+                  <span class="folder-close" v-show="enableClose && node.level === 1 && data.hovering" @click.stop="onCloseFolder(node, data)">
+                    <i class="iconfont iconclose"></i>
+                  </span>
+                </el-tooltip>
+              </span>
             </span>
-            <span class="folder-item-right">
-              <el-tooltip placement="right" effect="light" :content="tipReload" :open-delay="tipDelay" :disabled="isDraging" popper-class="folder-tooltip">
-                <span class="folder-refresh" v-show="enableReload && node.level === 1 && data.hovering" @click.stop="onRefreshFolder(node, data)">
-                  <i class="iconfont iconreload"></i>
+            <span v-else class="folder-inner" @dblclick.exact.stop="onDblclick(node, data, $event)">
+              <span class="file-item-left">
+                <span class="file-item-icon">
+                  <i :class="[data.icon.name, 'iconfont']" :style="{ color: data.icon.color }"></i>
                 </span>
-              </el-tooltip>
-              <el-tooltip placement="right" effect="light" :content="tipClose" :open-delay="tipDelay" :disabled="isDraging" popper-class="folder-tooltip">
-                <span class="folder-close" v-show="enableClose && node.level === 1 && data.hovering" @click.stop="onCloseFolder(node, data)">
-                  <i class="iconfont iconclose"></i>
-                </span>
-              </el-tooltip>
+                <el-tooltip placement="right" effect="light" :content="data.path" :open-delay="tipDelay" :disabled="isDraging" popper-class="folder-tooltip">
+                  <span class="file-item-label">{{ truncateName(data.label) }}</span>
+                </el-tooltip>
+              </span>
+              <span class="file-item-right">
+                <i v-if="checkedFiles && checkedFiles.includes(data.path)" class="iconfont iconcheck"></i>
+              </span>
             </span>
           </span>
-          <span v-else class="folder-inner" @dblclick.exact.stop="onDblclick(node, data, $event)">
-            <span class="file-item-left">
-              <span class="file-item-icon">
-                <i :class="[data.icon.name, 'iconfont']" :style="{ color: data.icon.color }"></i>
-              </span>
-              <el-tooltip placement="right" effect="light" :content="data.path" :open-delay="tipDelay" :disabled="isDraging" popper-class="folder-tooltip">
-                <span class="file-item-label">{{ truncateName(data.label) }}</span>
-              </el-tooltip>
-            </span>
-            <span class="file-item-right">
-              <i v-if="checkedFiles && checkedFiles.includes(data.path)" class="iconfont iconcheck"></i>
-            </span>
-          </span>
-        </span>
+        </context-menu>
       </el-tree>
     </vuescroll>
   </div>
@@ -82,6 +85,7 @@ import Vue from 'vue'
 import { Tree, Input, Tooltip } from 'element-ui'
 import vuescroll from 'vuescroll'
 import SearchInput from './SearchInput.vue'
+import ContextMenu from './ContextMenu.vue'
 import { isInArray, truncateText } from '../lib/util.js'
 import { listDir, getExtname } from '../lib/file.js'
 import { defaultIcon, DEF } from '../lib/consts.js'
@@ -347,7 +351,7 @@ export default {
       return !this.multiSelectionBlacklist.includes(getExtname(filePath))
     }
   },
-  components: { SearchInput, vuescroll }
+  components: { SearchInput, vuescroll, ContextMenu }
 }
 </script>
 
@@ -466,4 +470,3 @@ export default {
   top: 4px !important;
 }
 </style>
-

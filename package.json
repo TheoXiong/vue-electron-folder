@@ -1,6 +1,6 @@
 {
   "name": "vue-electron-folder",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A folder management component for electron app with Vue",
   "main": "dist/folder.min.js",
   "scripts": {

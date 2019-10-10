@@ -17,6 +17,10 @@
               @multi-select="onMultiSelect"
               @drag-start="onDragStart"
             >
+              <div slot-scope="{ node, data }" class="context-item">
+                <div class="context-item-text">name: {{ data.label}}</div>
+                <div class="context-item-text">path: {{ data.path}}</div>
+              </div>
             </folder>
           </div>
         </split-area>
@@ -38,7 +42,6 @@
 
 <script>
 import VueButton from '../components/VueButton.vue'
-import Folder from '../../../../dist/folder.min.js'
 const { remote } = require('electron')
 const { dialog } = remote
 const path = require('path')
@@ -65,7 +68,6 @@ export default {
     }
   },
   components: {
-    Folder,
     VueButton
   },
   mounted () {
@@ -228,6 +230,12 @@ export default {
   color: #909399;
 }
 
+.context-item{
+  padding: 10px;
+}
+.context-item-text{
+  padding: 6px 0px;
+}
 </style>
 
 <style>
