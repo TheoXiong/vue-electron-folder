@@ -102,7 +102,9 @@ export default {
       })
     },
     onClose (data) {
-      console.log('onClose', data)
+      console.log('onClose', data, this.openedFolders)
+      let index = this.openedFolders.findIndex(item => { return item === data.path })
+      index >= 0 ? this.openedFolders.splice(index, 1) : ''
     },
     onDblclick (data) {
       console.log('onDblclick', data)

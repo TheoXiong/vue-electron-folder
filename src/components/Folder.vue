@@ -188,9 +188,10 @@ export default {
   watch: {
     openedFolders: {
       handler (f) {
-        if (f && f.length > 0) {
+        if (f && f.length >= 0) {
           this.render(f)
-        } else {
+        }
+        if (!(f && f.length > 0)) {
           this.searchValue = ''
         }
       },

@@ -2,13 +2,12 @@
   <span class="context-menu-wrap">
     <transition
       v-if="!disabled"
-      :name="transition"
       @after-enter="handleAfterEnter"
       @after-leave="handleAfterLeave">
       <div
         class="context-menu"
-        :style="{ top: y, left: x }"
-        v-show="isShow.value"
+        :style="{ top: y, left: x, opacity: opacity }"
+        v-show="showMenu"
         ref="context">
         <slot name="context"></slot>
       </div>
@@ -23,19 +22,17 @@ export default {
   name: 'ContextMenu',
   data () {
     return {
+      showMenu: true,
+      opacity: 0,
       isShow: { value: false },
-      x: '0px',
-      y: '0px',
+      x: '99999px',
+      y: '99999px',
       display: null,
       emitEle: null,
       activeEle: null
     }
   },
   props: {
-    transition: {
-      type: String,
-      default: 'slide-fade'
-    },
     disabled: {
       type: Boolean,
       default: false
@@ -46,9 +43,15 @@ export default {
       handler (obj) {
         if (obj.value) {
           if (this.display && this.display.activeX && this.display.activeY) {
-            this.x = this.display.activeX + 'px'
-            this.y = this.display.activeY + 'px'
-          }
+            let coord = this.getContextCoordinate(this.display.activeX, this.display.activeY)
+            this.x = coord[0] + 'px'
+            this.y = coord[1] + 'px'
+            this.opacity = 1
+          } 
+        } else {
+          this.opacity = 0
+          this.x = '99999px'
+          this.y = '99999px'
         }
       },
       deep: true
@@ -87,6 +90,24 @@ export default {
     },
     handleAfterLeave () {
       this.$emit('after-leave')
+    },
+    getContextCoordinate (activeX, activeY) {
+      let coord = [activeX, activeY]
+      if (!(this.activeEle && this.activeEle.offsetHeight && this.activeEle.offsetWidth)) return coord
+      let viewportHeight = window.innerHeight
+      let viewportWidth = window.innerWidth
+      let targetHeight = this.activeEle.offsetHeight
+      let targetWidth = this.activeEle.offsetWidth
+      
+      if ((targetWidth + activeX + 8) > viewportWidth) {
+        coord[0] = activeX - targetWidth
+        coord[0] < 0 ? coord[0] = 0 : ''
+      }
+      if ((targetHeight + activeY + 8) > viewportHeight) {
+        coord[1] = activeY - targetHeight
+        coord[1] < 0 ? coord[1] = 0 : ''
+      }
+      return coord
     }
   }
 }
@@ -104,16 +125,5 @@ export default {
   box-shadow: 0px 1px 6px 1px rgba(0,0,0,.1);
   border-radius: 2px;
   z-index: 10000;
-}
-
-.slide-fade-enter-active {
-  transition: all .3s ease-in-out;
-}
-.slide-fade-leave-active {
-  transition: all .3s ease-in-out;
-}
-.slide-fade-enter, .slide-fade-leave-to{
-  transform: translateX(10px);
-  opacity: 0;
 }
 </style>
